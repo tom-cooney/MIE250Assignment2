@@ -14,6 +14,7 @@ public class Matrix {
 	private int _nCols; // Number of columns in this matrix; nomenclature: _ for data member, n for integer
 	// TODO: add your own data member to represent the matrix content
 	//       you could use a 2D array, or an array of Vectors (e.g., for each row)
+	private Vector[] _avMatrix;
 	
 	/** Allocates a new matrix of the given row and column dimensions
 	 * 
@@ -22,7 +23,16 @@ public class Matrix {
 	 * @throws LinAlgException if either rows or cols is <= 0
 	 */
 	public Matrix(int rows, int cols) throws LinAlgException {
-		// TODO: hint: see the corresponding Vector constructor
+		if(rows <= 0 || cols <= 0) {
+			throw new LinAlgException("Matrix rows " + rows + " or cols " + cols + " cannot be less than 1");
+		}
+		_nRows = rows; //number of vectors
+		_nCols = cols;  //dim of vetcors added
+		_avMatrix = new Vector[_nRows];
+		
+		for (int i = 0 ; i < _nRows ; i++) {
+			_avMatrix[i] = new Vector(_nCols);
+		}
 	}
 	
 	/** Copy constructor: makes a new copy of an existing Matrix m
@@ -31,15 +41,26 @@ public class Matrix {
 	 * @param m
 	 */
 	public Matrix(Matrix m) {
-		// TODO: hint: see the corresponding Vector "copy constructor" for an example
+		_nRows = m.getNumRows();
+		_nCols = m.getNumCols();
+		_avMatrix = new Vector[_nRows];
+        for (int i = 0 ; i < _nRows ; i++){
+            _avMatrix[i] = m._avMatrix[i];
+        }
+		
 	}
 
 	/** Constructs a String representation of this Matrix
 	 * 
 	 */
+	@Override
 	public String toString() {
-		// TODO: hint: see Vector.toString() for an example
-		return null;
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0 ; i < this._nRows ; i++) {
+			sb.append(_avMatrix[i]);
+			sb.append(" \n");
+		}
+		return sb.toString();
 	}
 
 	/** Tests whether another Object o (most often a matrix) is a equal to *this*
@@ -47,12 +68,23 @@ public class Matrix {
 	 * 
 	 * @param o the object to compare to
 	 */
+	@Override
 	public boolean equals(Object o) {
-		// TODO: hint: see Vector.equals(), you can also use Vector.equals() for checking equality 
-		//             of row vectors if you store your matrix as an array of Vectors for rows
-		
-		// TODO: this should not always return false!
-		return false; // This should not always return false!
+		if (o instanceof Matrix) {
+			Matrix m = (Matrix)o; // This is called a cast (or downcast)... we can do it since we
+			                      // know from the if statement that o is actually of subtype Vector
+			if(_nCols != m._nCols || _nRows != m._nRows) {
+				return false;
+			}
+			for(int i = 0 ; i < _nRows ; i++) {
+				if(!_avMatrix[i].equals(m._avMatrix[i])) {
+					return false;
+
+				}
+			}
+			return true;
+		} else // if we get here "(o instanceof Vector)" was false
+			return false; // Two objects cannot be equal if they don't have the same class type
 	}
 	
 	/** Return the number of rows in this matrix
@@ -60,8 +92,7 @@ public class Matrix {
 	 * @return 
 	 */
 	public int getNumRows() {
-		// TODO (this should not return -1!)
-		return -1;
+		return _nRows;
 	}
 
 	/** Return the number of columns in this matrix
@@ -69,8 +100,7 @@ public class Matrix {
 	 * @return 
 	 */
 	public int getNumCols() {
-		// TODO (this should not return -1!)
-		return -1;
+		return _nCols;
 	}
 
 	/** Return the scalar value at the given row and column of the matrix
@@ -81,8 +111,12 @@ public class Matrix {
 	 * @throws LinAlgException if row or col indices are out of bounds
 	 */
 	public double get(int row, int col) throws LinAlgException {
-		// TODO (this should not return -1!)
-		return -1;
+		if(row < 0 || row > this._nRows || col < 0 || col > this._nCols) {
+			throw new LinAlgException("Uuuuummm excuse me sempai ...... um how do you say ......... please only enter Matrixes of legal ages >.<");
+		}
+		else {
+			return _avMatrix[row].get(col);
+		}
 	}
 	
 	/** Return the Vector of numbers corresponding to the provided row index
@@ -92,8 +126,12 @@ public class Matrix {
 	 * @throws LinAlgException if row is out of bounds
 	 */
 	public Vector getRow(int row) throws LinAlgException {
-		// TODO (this should not return null!)
-		return null;
+		if(row < 0 || row > this._nRows) {
+			throw new LinAlgException("Uuuuummm excuse me sempai ...... um how do you say ......... please only make me play with vectors my age >.<");
+		}
+		else{
+			return _avMatrix[row];
+		}
 	}
 
 	/** Set the row and col of this matrix to the provided val
@@ -104,7 +142,12 @@ public class Matrix {
 	 * @throws LinAlgException if row or col indices are out of bounds
 	 */
 	public void set(int row, int col, double val) throws LinAlgException {
-		// TODO
+		if(row < 0 || row > this._nRows || col < 0 || col > this._nCols) {
+			throw new LinAlgException("Uuuuummm excuse me sempai ...... um how do you say ......... please only enter Matrixes of legal ages >.<");
+		}
+		else {
+			_avMatrix[row].set(col,val);
+		}
 	}
 	
 	/** Return a new Matrix that is the transpose of *this*, i.e., if "transpose"
@@ -137,8 +180,23 @@ public class Matrix {
 	 * @throws LinAlgException if the dim is <= 0
 	 */
 	public static Matrix GetIdentity(int dim) throws LinAlgException {
-		// TODO: this should not return null!
-		return null;
+		if(dim < 1) {
+			throw new LinAlgException("Uuuuummm excuse me sempai ...... um how do you say ......... please only make me play with vectors my age >.<");
+			}
+		else {
+			Matrix m = new Matrix(dim, dim);
+			for(int i = 0 ; i < dim ; i++) {
+				for (int j = 0 ; j < dim ; j++) {
+					if(i == j) {
+						m.set(i, j, 1);
+					}
+					else {
+						m.set(i, j, 0);
+					}
+				}
+			}		
+		return m;
+		}
 	}
 	
 	/** Returns the Matrix result of multiplying Matrix m1 and m2
@@ -149,9 +207,22 @@ public class Matrix {
 	 * @return
 	 * @throws LinAlgException if m1 columns do not match the size of m2 rows
 	 */
-	public static Matrix Multiply(Matrix m1, Matrix m2) {
-		// TODO: this should not return null!
-		return null;
+	public static Matrix Multiply(Matrix m1, Matrix m2) throws LinAlgException {
+        if(m1.getNumCols() != m2.getNumRows()){
+        	throw new LinAlgException ("Uuuuummm excuse me sempai ...... um how do you say ......... please only make me play with vectors my age >.<");
+        }
+        else {
+        	Matrix m = new Matrix(m1.getNumRows(), m2.getNumCols());
+        	Matrix m3 = new Matrix(m1.getNumRows(), m2.getNumCols());
+        	m3 = m2.transpose();
+        		for(int i = 0 ; i < m1.getNumRows() ; i++){
+        			for (int j = 0 ; j < m3.getNumCols(); j++) {
+        				m.set(i, j, Vector.InnerProd(m1.getRow(i), m3.getRow(j)));
+        			}
+        		}
+        	return m;
+        }
+
 	}
 		
 	/** Returns the Vector result of multiplying Matrix m by Vector v (assuming v is a column vector)
@@ -162,8 +233,16 @@ public class Matrix {
 	 * @throws LinAlgException if m columns do match the size of v
 	 */
 	public static Vector Multiply(Matrix m, Vector v) throws LinAlgException {
-		// TODO: this should not return null!
-		return null;
+		if (v.getDim() != m._nCols){
+			throw new LinAlgException("Uuuuummm excuse me sempai ...... um how do you say ......... please only make me play with vectors my age >.<");
+            }               
+        else{
+        	Vector ve = new Vector(m.getNumRows());	
+            for(int i = 0 ; i < m.getNumRows() ; i++){
+                ve.set(i, Vector.InnerProd(m.getRow(i), v));
+            }
+            return ve;
+        }
 	}
 
 }

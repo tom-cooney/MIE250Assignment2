@@ -116,8 +116,7 @@ public class Vector {
 	 * @return: the dimensionality of this Vector
 	 */
 	public int getDim() {
-		// TODO (this should not return -1!)
-		return -1;
+		return _nDim;
 	}
 
 	/** Returns the value of this vector at the given index (remember: array indices start at 0)
@@ -127,8 +126,12 @@ public class Vector {
 	 * @throws LinAlgException if array index is out of bounds (see throw examples above)
 	 */
 	public double get(int index) throws LinAlgException {
-		// TODO (this should not return -1.0!)
-		return -1.0;
+		if(index < 0 || index > _nDim) {
+			throw new LinAlgException("Uuuuummm excuse me sempai ...... um how do you say ......... please only enter indexes of legal ages >.<");
+		}
+		else {
+			return _adVal[index];
+		}
 	}
 
 	/** Set the value val of the vector at the given index (remember: array indices start at 0)
@@ -138,7 +141,12 @@ public class Vector {
 	 * @throws LinAlgException if array index is out of bounds (see throw examples above)
 	 */
 	public void set(int index, double val) throws LinAlgException {
-		// TODO
+		if(index < 0 || index >= _nDim) {
+			throw new LinAlgException("Uuuuummm excuse me sempai ...... um how do you say ......... please only enter indexes of legal ages number 2 >.<");
+		}
+		else {
+			_adVal[index] = val;
+		}
 	}
 	
 	/** Change the dimension of this Vector by *reallocating array storage* and copying content over
@@ -149,8 +157,30 @@ public class Vector {
 	 * @param new_dim
 	 * @throws LinAlgException if vector dimension is < 1
 	 */
-	public void changeDim(int new_dim) {
-		// TODO
+	public void changeDim(int new_dim) throws LinAlgException{
+		if(new_dim < 1) {
+			throw new LinAlgException("Uuuuummm excuse me sempai ...... um how do you say ......... please only enter dimensions that could exist (unlike me) >.<");
+		}
+		else {
+			if (_nDim > new_dim) {
+				double temp[] = new double[new_dim];
+				for (int i = 0 ; i < new_dim ; i++) {
+					temp[i] = _adVal[i];
+				}
+				_adVal = temp;
+			}
+			else {
+				double temp[] = new double[new_dim];
+				for (int i = 0 ; i < _nDim ; i++) {
+					temp[i] = _adVal[i];
+				}
+				for (int j = _nDim ; j < new_dim ; j++) {
+					temp[j] = 0.0;
+				}
+				_adVal = temp;
+			}
+			_nDim = new_dim;
+		}
 	}
 	
 	/** This adds a scalar d to all elements of *this* Vector
@@ -169,9 +199,12 @@ public class Vector {
 	 * @param d
 	 * @return new Vector after scalar addition
 	 */
-	public Vector scalarAdd(double d) {
-		// TODO (this should not return null!)
-		return null;
+	public Vector scalarAdd(double d) throws LinAlgException {
+		Vector temp = new Vector(_nDim);
+		for (int i = 0 ; i < _nDim ; i++) {
+			temp.set(i, _adVal[i] + d);
+		}
+		return temp;
 	}
 	
 	/** This multiplies a scalar d by all elements of *this* Vector
@@ -180,7 +213,9 @@ public class Vector {
 	 * @param d
 	 */
 	public void scalarMultInPlace(double d) {
-		// TODO
+		for (int i = 0 ; i < _nDim ; i++) {
+			_adVal[i] *= d;
+		}
 	}
 	
 	/** This creates a new Vector, multiplies it by a scalar d, and returns it
@@ -188,10 +223,14 @@ public class Vector {
 	 * 
 	 * @param d
 	 * @return new Vector after scalar addition
+	 * @throws LinAlgException 
 	 */
-	public Vector scalarMult(double d) {
-		// TODO (this should not return null!)
-		return null;
+	public Vector scalarMult(double d) throws LinAlgException {
+		Vector temp = new Vector(_nDim);
+		for (int i = 0 ; i < _nDim ; i++) {
+			temp.set(i, _adVal[i]*d);
+		}
+		return temp;
 	}
 
 	/** Performs an elementwise addition of v to *this*, modifies *this*
@@ -200,7 +239,14 @@ public class Vector {
 	 * @throws LinAlgException if dimensions of the two operand vectors do not match
 	 */
 	public void elementwiseAddInPlace(Vector v) throws LinAlgException {
-		// TODO
+		if(_nDim == v.getDim()) {
+			for (int i = 0 ; i < _nDim ; i++) {
+				_adVal[i] += v.get(i);
+			}
+		}
+		else {
+			throw new LinAlgException ("Uuuuummm excuse me sempai ...... um how do you say ......... please only send friend vectors my age >.<");
+		}
 	}
 
 	/** Performs an elementwise addition of *this* and v and returns a new Vector with result
@@ -210,8 +256,16 @@ public class Vector {
 	 * @throws LinAlgException if dimensions of the two operand vectors do not match
 	 */
 	public Vector elementwiseAdd(Vector v) throws LinAlgException {
-		// TODO (this should not return null!)
-		return null;
+		if(_nDim == v.getDim()) {
+			Vector temp = new Vector(_nDim);
+			for (int i = 0 ; i < _nDim ; i++) {
+				temp.set(i, _adVal[i] + v.get(i));
+			}
+		return temp;	
+		}
+		else {
+			throw new LinAlgException ("Uuuuummm excuse me sempai ...... um how do you say ......... please only send friend vectors my age number 2 >.<");
+		}
 	}
 	
 	/** Performs an elementwise multiplication of v and *this*, modifies *this*
@@ -220,7 +274,14 @@ public class Vector {
 	 * @throws LinAlgException if dimensions of the two operand vectors do not match
 	 */
 	public void elementwiseMultInPlace(Vector v) throws LinAlgException {
-		// TODO
+		if(_nDim == v.getDim()) {
+			for (int i = 0 ; i < _nDim ; i++) {
+				_adVal[i] *= v.get(i);
+			}
+		}
+		else {
+			throw new LinAlgException ("Uuuuummm excuse me sempai ...... um how do you say ......... please only send friend vectors my age number 3 >.<");
+		}
 	}
 
 	/** Performs an elementwise multiplication of *this* and v and returns a new Vector with result
@@ -230,8 +291,16 @@ public class Vector {
 	 * @throws LinAlgException if dimensions of the two operand vectors do not match
 	 */
 	public Vector elementwiseMult(Vector v) throws LinAlgException {
-		// TODO (this should not return null!)
-		return null;
+		if(_nDim == v.getDim()) {
+			Vector temp = new Vector(_nDim);
+			for (int i = 0 ; i < _nDim ; i++) {
+				temp.set(i, _adVal[i] * v.get(i));
+			}
+			return temp;
+		}
+		else {
+			throw new LinAlgException ("Uuuuummm excuse me sempai ...... um how do you say ......... please only send friend vectors my age number 4 >.<");
+		}
 	}
 
 	/** Performs an inner product of Vectors v1 and v2 and returns the scalar result
@@ -242,7 +311,15 @@ public class Vector {
 	 * @throws LinAlgException
 	 */
 	public static double InnerProd(Vector v1, Vector v2) throws LinAlgException {
-		// TODO (this should not return -1.0!)
-		return -1.0;
+		if(v1.getDim() == v2.getDim()) {
+			double sum = 0 ;
+			for (int i = 0 ; i < v1.getDim() ; i++) {
+				sum += v1.get(i) * v2.get(i);
+			}
+			return sum;
+		}
+		else {
+			throw new LinAlgException ("Uuuuummm excuse me sempai ...... um how do you say ......... please only send friend vectors my age number 5 >.<");
+		}
 	}
 }
